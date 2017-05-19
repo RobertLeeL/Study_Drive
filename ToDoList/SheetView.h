@@ -8,11 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SheetViewDelegate
+@required
+- (void)SheetViewClick:(int)index;
+
+@end
+
 @interface SheetView : UIView
 {
     @public
     UIView *_backView;;
 }
+
+@property (nonatomic,assign)id<SheetViewDelegate> delegate;
 
 -  (instancetype)initWithFrame:(CGRect)frame withSuperView: (UIView *)superView andQuesCount:(int)count;
 @end

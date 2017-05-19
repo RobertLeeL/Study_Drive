@@ -13,9 +13,9 @@
 #import "SelectModelView.h"
 #import "SheetView.h"
 
-@interface AnswerViewController ()
+@interface AnswerViewController ()<SheetViewDelegate>
 {
-    AnswerScrollView *view;
+    AnswerScrollView *_answerScrollView;
     SelectModelView *SMView;
     SheetView *_sheetView;
 }
@@ -27,18 +27,11 @@
     [super viewDidLoad];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor whiteColor];
+    [self creatData];
+        [self.view addSubview:_answerScrollView];
     
-    NSArray *arr= [MyDataManager getData:answer];
-    NSMutableArray *array = [[NSMutableArray alloc]init];
-    for (int i = 0; i < arr.count - 1; i++) {
-        AnswerModel *model = arr[i];
-        if ([model.pid intValue] == _number + 1) {
-            [array addObject:model];
-        }
-    }
-    view  = [[AnswerScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64 - 60)  withDataArray:array];
-    [self.view addSubview:view];
-    
+//    SheetView *sheet = [[SheetView alloc]init];
+//    sheet.delegate = self;
     
     
     [self creatToolbar];
@@ -49,9 +42,38 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)creatData {
+    if (_type == 1) {
+        NSArray *arr= [MyDataManager getData:answer];
+        NSMutableArray *array = [[NSMutableArray alloc]init];
+        
+        for (int i = 0; i < arr.count - 1; i++) {
+            AnswerModel *model = arr[i];
+            if ([model.pid intValue] == _number + 1) {
+                [array addObject:model];
+            }
+        }
+        _answerScrollView = [[AnswerScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64 - 60)  withDataArray:array];
+    }else if (_type == 2){
+        _answerScrollView = [[AnswerScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64 - 60)  withDataArray:[MyDataManager getData:answer]];
+    }else{
+        NSMutableArray *temArr = [[NSMutableArray alloc]init];
+        NSArray *array = [MyDataManager getData:answer];
+        NSMutableArray *dataArray = [[NSMutableArray alloc]init];
+        [temArr addObjectsFromArray:array];
+        for (int i = 0; i < temArr.count; i++) {
+            int index = arc4random() % (temArr.count);
+            [dataArray addObject:temArr[index]];
+            [temArr removeObjectAtIndex:index];
+        }
+        _answerScrollView = [[AnswerScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64 - 60)  withDataArray:dataArray];
+    }
+
+}
+
 
 - (void)creatSheetView {
-    _sheetView = [[SheetView alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 150)withSuperView:self.view andQuesCount:50];
+    _sheetView = [[SheetView alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 150)withSuperView:self.view andQuesCount:(int)_answerScrollView.dataArray.count];
     [self.view addSubview:_sheetView];
     
     
@@ -81,7 +103,7 @@
     
     barView.backgroundColor = [UIColor whiteColor];
     
-    NSArray *arr = @[@"2333",@"查看答案",@"收藏本题"];
+    NSArray *arr = @[[NSString stringWithFormat:@"%lu",(unsigned long)_answerScrollView.dataArray.count],@"查看答案",@"收藏本题"];
     for (int i = 0; i < 3; i++) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         
@@ -107,16 +129,16 @@
 - (void)clickToolBar:(UIButton *)btn {
     switch (btn.tag) {
         case 667://查看答案
-            if ([view.hadAnswerArray[view.currentPage] intValue] != 0) {
+            if ([_answerScrollView.hadAnswerArray[_answerScrollView.currentPage] intValue] != 0) {
                 return;
             }else {
-                AnswerModel *model = [view.dataArray objectAtIndex:view.currentPage];
+                AnswerModel *model = [_answerScrollView.dataArray objectAtIndex:_answerScrollView.currentPage];
                 NSString * answer = model.manswer;
                 char an = [answer characterAtIndex:0];
-                [view.hadAnswerArray replaceObjectAtIndex:view.currentPage withObject:[NSString stringWithFormat:@"%d",an-'A'+1]];
-                [view.leftTableView reloadData];
-                [view.rightTableView reloadData];
-                [view.mainTableView reloadData];
+                [_answerScrollView.hadAnswerArray replaceObjectAtIndex:_answerScrollView.currentPage withObject:[NSString stringWithFormat:@"%d",an-'A'+1]];
+                [_answerScrollView.leftTableView reloadData];
+                [_answerScrollView.rightTableView reloadData];
+                [_answerScrollView.mainTableView reloadData];
             }
             break;
         case 666://
@@ -130,6 +152,17 @@
         default:
             break;
     }
+}
+
+
+//这个逻辑有点问题 等有时间再修复   点击过后界面没有更新。
+- (void)SheetViewClick:(int)index {
+    UIScrollView *scroll = _answerScrollView->_scrollView;
+//    _answerScrollView.currentPage = index;
+//    [_answerScrollView reloadData];
+    scroll.contentOffset = CGPointMake((index - 1) * scroll.frame.size.width, 0);
+    
+    [scroll.delegate scrollViewDidEndDecelerating:scroll];
 }
 
 - (void)didReceiveMemoryWarning {

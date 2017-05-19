@@ -18,8 +18,7 @@
 @end
 @implementation AnswerScrollView
 {
-    UIScrollView *_scrollView;
-//    UITableView *_leftTableView;
+    //    UITableView *_leftTableView;
 //    UITableView *_mainTableView;
 //    UITableView *_rightTableView;
 //    NSArray *_dataArray;
@@ -56,10 +55,10 @@
         _scrollView.showsHorizontalScrollIndicator = NO;
         
         
-        _leftTableView.scrollEnabled = NO;
-        _mainTableView.scrollEnabled = NO;
-        _rightTableView.scrollEnabled = NO;
-        
+//        _leftTableView.scrollEnabled = NO;
+//        _mainTableView.scrollEnabled = NO;
+//        _rightTableView.scrollEnabled = NO;
+//        
         
         
         if (_dataArray.count > 1) {

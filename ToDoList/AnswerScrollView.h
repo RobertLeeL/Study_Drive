@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface AnswerScrollView : UIView
+{
+    @public
+    UIScrollView *_scrollView;
 
-@property (nonatomic,assign,readonly)int currentPage;
+}
+
+@property (nonatomic,assign)int currentPage;
 
 - (instancetype)initWithFrame:(CGRect)frame withDataArray:(NSArray *)dataArray;
 

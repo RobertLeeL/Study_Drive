@@ -10,6 +10,7 @@
 #import "TestSelectTableViewCell.h"
 #import "TestSelectModel.h"
 #import "AnswerViewController.h"
+#import "SubTestSelectModel.h"
 
 @interface TestSelectViewController () <UITableViewDelegate,UITableViewDataSource>
 {
@@ -61,9 +62,15 @@
         cell.numberLabel.layer.masksToBounds = YES;
         cell.numberLabel.layer.cornerRadius = 8;
     }
-    TestSelectModel *model = _dateArray[indexPath.row];
-    cell.numberLabel.text = model.pid;
-    cell.titleLabel.text = model.pname;
+    if(_type == 1){
+        TestSelectModel *model = _dateArray[indexPath.row];
+        cell.numberLabel.text = model.pid;
+        cell.titleLabel.text = model.pname;
+    }else {
+        SubTestSelectModel *model = _dateArray[indexPath.row];
+        cell.numberLabel.text = model.sid;
+        cell.titleLabel.text = model.sname;
+    }
     return cell;
 }
 
@@ -76,6 +83,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     AnswerViewController *con =  [[AnswerViewController alloc]init];
+    con.type = 1;
     con.number = (int)indexPath.row;
     [self.navigationController pushViewController: con animated:YES];
     

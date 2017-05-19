@@ -10,6 +10,7 @@
 #import "FMDatabase.h"
 #import "TestSelectModel.h"
 #import "AnswerModel.h"
+#import "SubTestSelectModel.h"
 
 @implementation MyDataManager
 
@@ -71,6 +72,25 @@
             }
             }
                 break;
+        case subChapter:
+        {
+            NSString *sql = @"SELECT pid,sname,scount,sid FROM secondlevel";
+            FMResultSet *rs = [dataBase executeQuery:sql];
+            if (rs == nil) {
+                NSLog(@"rs为空");
+            }
+            while ([rs next]) {
+                SubTestSelectModel *model = [[SubTestSelectModel alloc]init];
+                model.pid = [NSString stringWithFormat:@"%d",[rs intForColumn:@"pid"]];
+                model.sname = [rs stringForColumn:@"sname"];
+                model.scount = [NSString stringWithFormat:@"%d",[rs intForColumn:@"scount"]];
+                model.sid = [NSString stringWithFormat:@"%d",[rs intForColumn:@"sid"]];
+                
+                [array addObject:model];
+                
+            }
+        }
+            break;
             default:
             break;
     }

@@ -10,7 +10,8 @@
 
 typedef enum {
     chapter, //章节练习数据
-    answer  //答题数据
+    answer,  //答题数据
+    subChapter//专项练习
 }DataType;
 
 @interface MyDataManager : NSObject

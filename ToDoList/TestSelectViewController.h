@@ -14,4 +14,8 @@
 
 @property (nonatomic,copy) NSArray *dateArray;
 
+
+//type== 1 章节 type==2  专项
+@property (nonatomic,assign)int type;
+
 @end

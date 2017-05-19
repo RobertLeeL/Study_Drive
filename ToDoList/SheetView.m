@@ -53,13 +53,31 @@
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
         btn.frame = CGRectMake((_width - 44 *6)/ 2 +44 *(i %6), 10 + 44 * (i /6), 40, 40);
         btn.backgroundColor = [UIColor colorWithRed:220 /255.0 green:220 / 255.0 blue:220 / 255.0 alpha:1];
+        if (i == 0) {
+            btn.backgroundColor = [UIColor orangeColor];
+        }
         btn.layer.cornerRadius = 8;
         btn.layer.masksToBounds = YES;
+        btn.tag = 101 + i;
+        [btn addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
         [btn setTitle:[NSString stringWithFormat:@"%d",i + 1] forState:UIControlStateNormal];
         [_scrollView addSubview:btn];
     }
     int tip = (_count % 6)?1:0;
     _scrollView.contentSize = CGSizeMake(0, 20 + 44 * ((_count / 6) + 1 + tip));
+}
+
+- (void)click:(UIButton *)btn {
+    int index = (int)btn.tag - 100;
+    for (int i = 0; i < _count ; i++) {
+        UIButton *button  = (UIButton *)[self viewWithTag:i+101];
+        if (i != index - 1) {
+            button.backgroundColor = [UIColor colorWithRed:220 /255.0 green:220 / 255.0 blue:220 / 255.0 alpha:1];
+        }else{
+            button.backgroundColor = [UIColor orangeColor];
+        }
+    }
+    [_delegate SheetViewClick:index];
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {

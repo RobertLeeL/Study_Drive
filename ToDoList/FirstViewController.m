@@ -10,6 +10,7 @@
 #import "FirstTableViewCell.h"
 #import "TestSelectViewController.h"
 #import "MyDataManager.h"
+#import "AnswerViewController.h"
 
 @interface FirstViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -104,7 +105,32 @@
             [self.navigationController pushViewController:con animated:YES];
         }
             break;
-            
+        case 1://顺序练习
+        {
+            AnswerViewController *answer = [[AnswerViewController alloc]init];
+            answer.type = 2;
+            [self.navigationController pushViewController:answer animated:YES];
+        }
+            break;
+
+        case 2://随机练习
+        {
+            AnswerViewController *answer = [[AnswerViewController alloc]init];
+            answer.type = 3;
+            [self.navigationController pushViewController:answer animated:YES];        }
+            break;
+
+        case 3://专项练习
+        {
+            TestSelectViewController *con = [[TestSelectViewController alloc]init];
+            con.dateArray = [MyDataManager getData:subChapter];
+            con.myTitle = @"专项练习";
+            UIBarButtonItem *barItem = [[UIBarButtonItem alloc]init];
+            barItem.title = @"";
+            self.navigationItem.backBarButtonItem = barItem;
+            [self.navigationController pushViewController:con animated:YES];
+        }
+            break;
         default:
             break;
     }
